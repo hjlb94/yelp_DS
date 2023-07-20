@@ -17,7 +17,7 @@ Data was loaded into Python using the Pandas read json() method. The raw data co
 
 The rolling average in a 7 day period is used as a measure of review frequency and the lifetime of a busi- ness is defined as the timespan between the first and last reviews. An accurate mean business review rating was calculated from the reviews dataset and used in the analysis.
 
-
+'''
 import pandas as pd
 import json
 
@@ -29,4 +29,4 @@ with pd.read_json(file, lines=True, chunksize=100000) as reader:
     reader
     for chunk in reader:
         business_data = pd.concat([business_data, pd.DataFrame(chunk)], ignore_index = True)
-        
+'''
