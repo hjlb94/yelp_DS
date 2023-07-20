@@ -25,8 +25,19 @@ file = '**DIRECTORY**/yelp_academic_dataset_business.json'
 
 business_data = pd.DataFrame()
 
+// important to chunk as the files are large
 with pd.read_json(file, lines=True, chunksize=100000) as reader:
     reader
     for chunk in reader:
         business_data = pd.concat([business_data, pd.DataFrame(chunk)], ignore_index = True)
+
+file = '**DIRECTORY**/yelp_academic_dataset_review.json'
+
+review_data = pd.DataFrame()
+
+with pd.read_json(file, lines=True, chunksize=100000) as reader:
+    reader
+    for chunk in reader:
+        review_data = pd.concat([review_data, pd.DataFrame(chunk)], ignore_index = True)
+        
 ```
