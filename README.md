@@ -39,5 +39,22 @@ with pd.read_json(file, lines=True, chunksize=100000) as reader:
     reader
     for chunk in reader:
         review_data = pd.concat([review_data, pd.DataFrame(chunk)], ignore_index = True)
-        
+
+business_data = business_data.dropna()
+review_data = review_data.dropna()
+
+print("bdat len: ", len(business_data))
+print("rdat len: ", len(review_data))
+
+review_data = review_data.set_index('date')
+review_data = review_data.sort_index()
+
+# Only investigating Arizona
+business_data = business_data[business_data['state']=='AZ']
+
+# make sure only businesses that exist have reviews
+review_data = review_data[review_data['business_id'].isin(pd.Series(business_data['business_id']))]
+
+print(len(review_data))
+
 ```
