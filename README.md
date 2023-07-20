@@ -25,7 +25,7 @@ file = '**DIRECTORY**/yelp_academic_dataset_business.json'
 
 business_data = pd.DataFrame()
 
-// important to chunk as the files are large
+# important to chunk as the files are large
 with pd.read_json(file, lines=True, chunksize=100000) as reader:
     reader
     for chunk in reader:
