@@ -58,3 +58,63 @@ review_data = review_data[review_data['business_id'].isin(pd.Series(business_dat
 print(len(review_data))
 
 ```
+
+# 2 Investigation
+
+Exploratory data analysis was undertaken by indexing the review dataset by the date column and counting the number of reviews in each rolling seven day period. One significant issue was a large number of seven day periods with no reviews in them leading to an overestimation of the rolling seven day review count. Each individual business had review counts of 0 added to the dataset for each week over their respective lifespan, giving an accurate average rolling weekly review count.
+
+First step is to remove outliers:
+```python
+review_count = pd.DataFrame(review_data.groupby('business_id')['stars'].count()).reset_index()
+
+stand = review_count['stars'].std()
+mu = review_count['stars'].mean()
+
+review_count[review_count['stars'] > (mu + 3*stand)]['business_id']
+
+# remove all business data with star values outside 3 SD from the mean.
+review_data = review_data[review_data['business_id'].isin(review_count[review_count['stars'] <= (mu + 3*stand)]['business_id'])]
+business_data = business_data[business_data['business_id'].isin(review_count[review_count['stars'] <= (mu + 3*stand)]['business_id'])]
+
+print(len(review_data), len(business_data))
+```
+
+Perform data manipulation to input blank weeks where necessary:
+```python
+import numpy as np
+import time
+
+average = []
+business = []
+iter = 0
+begin = time.time()
+for i in business_id:
+    business.append(i)
+    
+    start = np.min(review_data[review_data['business_id'] == str(i)].index)
+    end = np.max(review_data[review_data['business_id'] == str(i)].index)
+    df_Date=pd.date_range(start=start, end=end, freq='w')
+    df_Date = pd.DataFrame(df_Date, columns = ['date'])
+    df_Date['stars'] = 0
+    
+    #get the 
+    average_rolling = review_data[review_data['business_id'] == str(i)]['stars'].rolling('7d').count()
+    average_rolling = pd.DataFrame(average_rolling).reset_index()
+    
+    #concat the df on the date column
+    df_Date = pd.concat([df_Date, average_rolling], ignore_index = True)
+    df_Date = df_Date.groupby('date')['stars'].sum()
+    
+    average.append(np.mean(df_Date))
+    
+    #average_rolling.append(review_data[review_data['business_id'] == str(i)]['stars'].rolling('7d').count().mean())
+    iter += 1
+    if iter % 100 == 0:
+        print(iter, "elapsed time: ", time.time() - begin)
+    
+
+        #print(len(business), len(average))
+
+#print(business)
+#print(average)
+```
