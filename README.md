@@ -118,3 +118,44 @@ for i in business_id:
 #print(business)
 #print(average)
 ```
+
+# 3 - This section packages up the data and performs KDE analysis
+
+```python
+#create dataframe with columns for 
+import time 
+time_dev = business_data['business_id'].reset_index().drop('index', axis = 1)
+time_dev[['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']] = 0
+#time_dev = pd.DataFrame(columns = ['business_id', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'total'], index = None)
+business_id = review_data['business_id'][:].unique()
+iter = 0
+begin = time.time()
+
+for bus in time_dev['business_id'][:]:
+    start = np.min(review_data[review_data['business_id'] == bus].index)
+    end = np.max(review_data[review_data['business_id'] == bus].index)
+    reviews = (review_data[review_data['business_id'] == bus]['stars']).count()
+    diff = end-start
+    ratio_sum = 0
+    #time_dev = time_dev.append(pd.DataFrame([[bus, 0, 0,0, 0,0,0,0,0,0,0,0,0]]))
+    
+    for i in np.arange(1, 11):
+        if i == 1:
+            section_start = start
+            section_end = start + diff/10
+        else:
+            section_start = section_end
+            section_end = section_start + diff/10
+        ratio = review_data[(review_data['business_id'] == bus) & (review_data.index >= section_start) & 
+                           (review_data.index <= section_end)]['stars'].count() / reviews
+        ratio_sum += ratio
+        #print(section_start, section_end, ratio, ratio_sum)
+        time_dev.at[iter, time_dev.columns[i]] = ratio
+    iter += 1
+    if iter % 100 == 0:
+        print(iter, "elapsed time: ", time.time() - begin)
+
+        
+        
+#print(start, end, diff, reviews, bus)
+```
