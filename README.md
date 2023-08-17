@@ -1,5 +1,4 @@
-# yelp_DS
-Yelp Data Investigation
+# Yelp Data Investigation - uni project - upload unfinished
 
 Yelp provides an easily accessible and vast repository of business review data. In this coursework, the open-source Yelp dataset is investigated to see whether the distribution of the frequencies of reviews can be used to predict the failure of a business. 
 
